@@ -132,7 +132,7 @@ on a runtime value. Use a static file otherwise.
 > [!TIP]
 > This snippet is lifted from the
 > [code-server kit](https://github.com/docker/sbx-kits-contrib/tree/main/code-server)
-> in the contrib repo, which is also a runnable sample that demonstrates
+> in the contrib repository, which is also a runnable sample that demonstrates
 > the full pattern.
 
 ## Ship a Claude Code skill

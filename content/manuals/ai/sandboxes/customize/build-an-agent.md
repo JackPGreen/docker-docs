@@ -266,7 +266,7 @@ $ sbx run --kit ./amp/ amp
 ```
 
 The published copy of this kit also runs directly from the contrib
-repo:
+repository:
 
 ```console
 $ sbx run --kit "git+https://github.com/docker/sbx-kits-contrib.git#dir=amp" amp
