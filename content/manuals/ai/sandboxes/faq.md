@@ -44,7 +44,7 @@ $ export SBX_NO_TELEMETRY=1
 ## How do I set custom environment variables inside a sandbox?
 
 The [`sbx secret`](/reference/cli/sbx/secret/) command only supports a fixed set
-of [services](security/credentials.md#supported-services) (Anthropic, OpenAI,
+of [services](security/credentials.md#built-in-services) (Anthropic, OpenAI,
 GitHub, and others). If your agent needs an environment variable that isn't
 tied to a supported service, such as `BRAVE_API_KEY` or a custom internal
 token, write it to `/etc/sandbox-persistent.sh` inside the sandbox. This

@@ -98,17 +98,18 @@ See [`initFiles`](#initfiles) in the spec reference for all fields.
 ### Set environment variables
 
 Environment variables set by the kit are available to the agent at
-runtime. Sensitive values can be marked proxy-managed, so the real
-credential is substituted only when the proxy forwards a request. The
-secret itself never enters the VM:
+runtime:
 
 ```yaml
 environment:
   variables:
     MY_TOOL_WORKSPACE: /home/agent/my-tool
-  proxyManaged:
-    - MY_TOOL_API_KEY
 ```
+
+For credentials, see
+[Authenticate to external services](#authenticate-to-external-services).
+Don't put secret values directly in `environment.variables` — they'd
+be visible inside the sandbox VM.
 
 ### Control network access
 
@@ -126,13 +127,13 @@ For authenticated services, see
 
 ### Authenticate to external services
 
-A kit can attach credentials to outbound requests without exposing the
-secret to the agent. The host-side proxy reads the credential and
-injects it as a header when a request leaves the sandbox; the agent
-inside the VM never sees the value.
+A kit can attach credentials to outbound requests through the
+host-side proxy. The agent inside the VM works with a sentinel value;
+the proxy reads the real credential on the host and overwrites the
+auth header before the request leaves the sandbox.
 
-The wiring has three blocks, tied together by a service identifier
-that you choose (here, `my-service`):
+The standard pattern uses four blocks tied to a service identifier
+you choose (here, `my-service`):
 
 ```yaml
 network:
@@ -142,41 +143,28 @@ network:
     api.example.com: my-service # Tag traffic to this domain
   serviceAuth:
     my-service:
-      headerName: Authorization # Attach the credential as this header
-      valueFormat: "Bearer %s" # ...formatted like this
+      headerName: Authorization # Overwrite this header
+      valueFormat: "Bearer %s"
 
 credentials:
   sources:
     my-service:
       env:
-        - MY_SERVICE_API_KEY # Where to read the credential on the host
+        - MY_SERVICE_API_KEY # Host-side credential lookup
+
+environment:
+  proxyManaged:
+    - MY_SERVICE_API_KEY # Set the in-VM env var to "proxy-managed"
 ```
 
-When the sandbox sends a request to `api.example.com`, the proxy tags
-it `my-service`, looks up the credential, and sets
-`Authorization: Bearer <value>` on the request before forwarding.
+The agent boots with `MY_SERVICE_API_KEY=proxy-managed`, sends a
+request with that value in `Authorization`, and the proxy overwrites
+the header with the real credential before forwarding. The real
+secret never enters the VM.
 
-The credential value is resolved on the host, in this order:
-
-1. A stored secret keyed on the service identifier
-   (`sbx secret set -g my-service`).
-2. Any host environment variable listed under
-   `credentials.sources.<service>.env`.
-
-Storing the value in your OS keychain avoids exporting it in every
-shell:
-
-```console
-$ sbx secret set -g my-service
-```
-
-The keychain entry is keyed on the same service identifier the kit
-declares — there's no separate service registration step.
-
-For credentials that don't fit this shape — for example, a value used
-in a request body, or a header that mixes the secret with other text —
-see [Custom secrets](../security/credentials.md#custom-secrets) for an
-experimental placeholder-substitution alternative.
+See [Credentials](../security/credentials.md) for how to provide the
+credential value on your host, other approaches for cases the example
+above doesn't fit, and what the proxy does at request time.
 
 ### Define an agent
 

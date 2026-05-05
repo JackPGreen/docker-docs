@@ -8,32 +8,53 @@ keywords: docker sandboxes, credentials, api keys, authentication, proxy, ssh ag
 {{< summary-bar feature_name="Docker Sandboxes sbx" >}}
 
 Most agents need an API key for their model provider. An HTTP/HTTPS proxy on
-your host intercepts outbound API requests from the sandbox and injects the
-appropriate authentication headers before forwarding each request. Your
-credentials stay on the host and are never stored inside the sandbox VM. For
-how this works as a security layer, see
+your host intercepts outbound requests from the sandbox, looks up the matching
+credential on the host, and overwrites the auth header before forwarding. The
+real credential stays on the host; the sandbox sees only a sentinel value. For
+the security model behind this, see
 [Credential isolation](isolation.md#credential-isolation).
 
-There are two ways to provide credentials:
+## How credential injection works
 
-- **Stored secrets** (recommended): saved in your OS keychain, encrypted and
-  persistent across sessions.
-- **Environment variables:** read from your current shell session. This works
-  but is less secure on the host side, since environment variables are visible
-  to other processes running as your user.
+The proxy needs three things to inject a credential: which outbound traffic to
+match, what header to write, and what value to use. The kit (or built-in agent
+definition) declares the first two. You provide the value on the host.
 
-If both are set for the same service, the stored secret takes precedence. For
-multi-provider agents (OpenCode, Docker Agent), the proxy automatically selects the
-correct credentials based on the API endpoint being called. See individual
-[agent pages](../agents/) for provider-specific details.
+There are two host-side stores, plus a host shell fallback:
+
+- **Stored secrets, by service identifier.** Built-in agents declare service
+  identifiers (`anthropic`, `openai`, `github`, etc.) in their kit specs;
+  custom kits can declare their own. `sbx secret set` stores a value keyed on
+  that identifier. When a sandboxed request matches a service's domain, the
+  proxy reads the stored value and writes the configured header. Inside the
+  sandbox, the env var holds a sentinel like `proxy-managed`, so SDKs that
+  read the variable see something non-empty without seeing the real secret.
+  See [Stored secrets](#stored-secrets).
+
+- **Stored secrets, by target domain and env var name.** `sbx secret set-custom`
+  stores a value alongside a target domain, an env var name, and an optional
+  placeholder. The sandbox sees the placeholder; the proxy substitutes it
+  with the real value anywhere it appears in outbound traffic to that
+  domain. Use this when the service-identifier model doesn't fit — for
+  example, when the agent validates the env var format at boot, or when the
+  credential lands in a request body. See [Custom secrets](#custom-secrets).
+
+- **Host shell environment variables.** As a fallback, the proxy reads from
+  your shell environment. Useful for one-off testing or development; stored
+  secrets are preferred because shell environment variables are plaintext
+  and visible to other processes running as your user. See
+  [Environment variables](#environment-variables).
+
+If both a stored secret and a host env var are set for the same service, the
+stored secret takes precedence. For multi-provider agents (OpenCode, Docker
+Agent), the proxy selects credentials based on the API endpoint being called.
+See individual [agent pages](../agents/) for provider-specific details.
 
 ## Stored secrets
 
-The `sbx secret` command stores credentials in your OS keychain so you don't
-need to export environment variables in every terminal session. When a sandbox
-starts, the proxy looks up stored secrets and uses them to authenticate API
-requests on behalf of the agent. The secret is never exposed directly to the
-agent.
+`sbx secret set` stores credentials in your OS keychain, keyed on a service
+identifier. Built-in agents declare a fixed set of services. Custom kits can
+declare their own. The same `sbx secret set` flow works for both.
 
 ### Store a secret
 
@@ -61,10 +82,10 @@ You can also pipe in a value for non-interactive use:
 $ echo "$ANTHROPIC_API_KEY" | sbx secret set -g anthropic
 ```
 
-### Supported services
+### Built-in services
 
-Each service name maps to a set of environment variables the proxy checks and
-the API domains it authenticates requests to:
+Each built-in service name maps to a set of environment variables the proxy
+checks and the API domains it authenticates requests to:
 
 | Service     | Environment variables              | API domains                         |
 | ----------- | ---------------------------------- | ----------------------------------- |
@@ -81,6 +102,22 @@ the API domains it authenticates requests to:
 When you store a secret with `sbx secret set -g <service>`, the proxy uses it
 the same way it would use the corresponding environment variable. You don't
 need to set both.
+
+### Services declared by kits
+
+Custom kits can declare their own service identifiers in `spec.yaml` —
+they're not limited to the table above. To provide a credential for a
+kit-declared service, run `sbx secret set` with the same identifier the kit
+declares under `credentials.sources`:
+
+```console
+$ sbx secret set -g my-service
+```
+
+There's no separate registration step; the keychain entry is keyed on the
+identifier the kit already uses. See
+[Authenticate to external services](../customize/kits.md#authenticate-to-external-services)
+for the kit-side wiring.
 
 ### List and remove secrets
 
@@ -131,17 +168,15 @@ network policy. For details, see
 ## Custom secrets
 
 > [!IMPORTANT]
-> Custom secrets are experimental. The `set-custom` subcommand is
-> hidden from `sbx --help`, and behavior, flags, and the placeholder
-> format may change.
+> Custom secrets are experimental. The `set-custom` subcommand is hidden
+> from `sbx --help`, and behavior, flags, and the placeholder format may
+> change.
 
-For services that aren't in the [supported services](#supported-services)
-table and don't fit the service-identifier model used by
-[kits](../customize/kits.md#authenticate-to-external-services),
-`sbx secret set-custom` stores a secret keyed on a target host and
-environment variable name. The sandbox sees the env var set to a
-generated placeholder; the proxy substitutes the real secret into
-outbound traffic to the target host before forwarding.
+For credentials that don't fit the service-identifier model — for example,
+when an agent validates the env var format at boot, or when the credential
+lands in a request body rather than a header — use `sbx secret set-custom`.
+The secret is keyed on a target domain, an env var name, and an optional
+placeholder string, instead of a service identifier.
 
 ```console
 $ sbx secret set-custom -g \
@@ -150,18 +185,13 @@ $ sbx secret set-custom -g \
     --value <secret>
 ```
 
-Inside the sandbox, `API_KEY` contains a placeholder string (for
-example, `sbx-cs-<rand>`). When a sandboxed process sends a request
-to `api.example.com` and the placeholder appears anywhere in the
-request, the proxy replaces it with the real value. The agent never
-sees the real secret.
+Inside the sandbox, `API_KEY` is set to a generated placeholder (for example,
+`sbx-cs-<rand>`). When a sandboxed process sends a request to
+`api.example.com` and the placeholder appears anywhere in the request, the
+proxy replaces it with the real value. The agent never sees the real secret.
 
-Use `set-custom` only when the service-based flow doesn't fit — for
-example, when the credential lands in a request body rather than a
-header, when the value is mixed with other text in a header, or
-when you don't want to author a kit. Prefer the
-[stored secret](#stored-secrets) flow whenever it's an option; it's
-simpler and the credential shape is constrained.
+Prefer the [service-based flow](#stored-secrets) whenever it's an option —
+the kit handles the wiring; you only provide the value.
 
 ## Environment variables
 
@@ -180,7 +210,7 @@ The proxy reads the variable from your terminal session. See individual
 > These environment variables are set on your host, not inside the sandbox.
 > Sandbox agents are pre-configured to use credentials managed by the
 > host-side proxy. For custom environment variables not tied to a
-> [supported service](#supported-services), see
+> [built-in service](#built-in-services), see
 > [Setting custom environment variables](../faq.md#how-do-i-set-custom-environment-variables-inside-a-sandbox).
 
 ## Best practices
