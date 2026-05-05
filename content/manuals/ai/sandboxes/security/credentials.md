@@ -66,17 +66,17 @@ $ echo "$ANTHROPIC_API_KEY" | sbx secret set -g anthropic
 Each service name maps to a set of environment variables the proxy checks and
 the API domains it authenticates requests to:
 
-| Service     | Environment variables                        | API domains                         |
-| ----------- | -------------------------------------------- | ----------------------------------- |
-| `anthropic` | `ANTHROPIC_API_KEY`                          | `api.anthropic.com`                 |
-| `aws`       | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | AWS Bedrock endpoints               |
-| `github`    | `GH_TOKEN`, `GITHUB_TOKEN`                   | `api.github.com`, `github.com`      |
-| `google`    | `GEMINI_API_KEY`, `GOOGLE_API_KEY`           | `generativelanguage.googleapis.com` |
-| `groq`      | `GROQ_API_KEY`                               | `api.groq.com`                      |
-| `mistral`   | `MISTRAL_API_KEY`                            | `api.mistral.ai`                    |
-| `nebius`    | `NEBIUS_API_KEY`                             | `api.studio.nebius.ai`              |
-| `openai`    | `OPENAI_API_KEY`                             | `api.openai.com`                    |
-| `xai`       | `XAI_API_KEY`                                | `api.x.ai`                          |
+| Service     | Environment variables              | API domains                         |
+| ----------- | ---------------------------------- | ----------------------------------- |
+| `anthropic` | `ANTHROPIC_API_KEY`                | `api.anthropic.com`                 |
+| `aws`       | `AWS_ACCESS_KEY_ID`                | AWS Bedrock endpoints               |
+| `github`    | `GH_TOKEN`, `GITHUB_TOKEN`         | `api.github.com`, `github.com`      |
+| `google`    | `GEMINI_API_KEY`, `GOOGLE_API_KEY` | `generativelanguage.googleapis.com` |
+| `groq`      | `GROQ_API_KEY`                     | `api.groq.com`                      |
+| `mistral`   | `MISTRAL_API_KEY`                  | `api.mistral.ai`                    |
+| `nebius`    | `NEBIUS_API_KEY`                   | `api.studio.nebius.ai`              |
+| `openai`    | `OPENAI_API_KEY`                   | `api.openai.com`                    |
+| `xai`       | `XAI_API_KEY`                      | `api.x.ai`                          |
 
 When you store a secret with `sbx secret set -g <service>`, the proxy uses it
 the same way it would use the corresponding environment variable. You don't
