@@ -18,7 +18,7 @@ A kit packages a set of capabilities a sandbox can use, such as:
 - Tools to install
 - Environment variables to set
 - Credentials to inject
-- Domains to allow
+- Network rules to allow or deny domains
 - Files to drop in
 - Startup commands to run
 
@@ -26,7 +26,7 @@ You declare these in a single `spec.yaml` file, point the CLI at the
 directory (or a ZIP, OCI artifact, or Git URL), and the sandbox applies
 and enforces them at runtime. Credentials stay on the host and go through
 a proxy instead of entering the VM, and outbound traffic is restricted to
-the domains the kit allows.
+the domains permitted by the kit's network rules.
 
 A kit is either a mixin or an agent:
 
@@ -113,14 +113,22 @@ be visible inside the sandbox VM.
 
 ### Control network access
 
-Network rules define which domains the sandbox can reach:
+Network rules define which domains the sandbox can reach or block. Kit
+network rules apply only to sandboxes that use the kit:
 
 ```yaml
 network:
   allowedDomains:
     - api.example.com
     - "*.cdn.example.com"
+  deniedDomains:
+    - telemetry.example.com
 ```
+
+Use `allowedDomains` for hosts the agent needs, such as package
+registries, install endpoints, or external APIs. Use `deniedDomains` for
+hosts the agent should not reach, such as telemetry endpoints. If a domain
+matches both an allow rule and a deny rule, the deny rule wins.
 
 For authenticated services, see
 [Authenticate to external services](#authenticate-to-external-services).
@@ -441,6 +449,7 @@ Service identifiers link credentials to [network rules](#network).
 ```yaml
 network:
   allowedDomains: [<domain>, ...]
+  deniedDomains: [<domain>, ...]
   serviceDomains:
     <domain>: <service-id>
   serviceAuth:
@@ -452,6 +461,7 @@ network:
 | Field                     | Description                                                      |
 | ------------------------- | ---------------------------------------------------------------- |
 | `allowedDomains`          | Domains the sandbox can reach. Wildcards supported.              |
+| `deniedDomains`           | Domains the sandbox can't reach. Deny rules take precedence.     |
 | `serviceDomains`          | Map of domain to service identifier from `credentials.sources`.  |
 | `serviceAuth.headerName`  | HTTP header the proxy sets (for example, `Authorization`).       |
 | `serviceAuth.valueFormat` | Format string for the header value (for example, `"Bearer %s"`). |
