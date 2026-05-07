@@ -33,6 +33,19 @@ git push -u origin <branch-name>
 
 ## 3. Create the PR
 
+Before creating a PR for an issue, check whether that issue already has an open
+linked PR:
+
+```bash
+gh api repos/docker/docs/issues/<issue-number>/timeline --paginate \
+  --jq '.[] | select((.event=="cross-referenced" or .event=="connected" or .event=="referenced") and .source.issue.pull_request and .source.issue.state=="open") | {url: .source.issue.html_url, title: .source.issue.title}'
+```
+
+If this returns an open PR that addresses the same issue, stop. Don't open a
+duplicate PR; report the existing PR instead. Only proceed if there is no open
+linked PR, or if the existing PR clearly does not address the issue and you
+explain why in the new PR body.
+
 Derive the fork owner dynamically:
 
 ```bash
