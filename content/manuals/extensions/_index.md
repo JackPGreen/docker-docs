@@ -5,7 +5,7 @@ description: Extensions
 keywords: Docker Extensions, Docker Desktop, Linux, Mac, Windows
 params:
   sidebar:
-    group: Products
+    group: Application development
 aliases:
  - /desktop/extensions/
 ---

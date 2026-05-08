@@ -4,7 +4,7 @@ description: Secure, minimal, and production-ready base images
 weight: 8
 params:
   sidebar:
-    group: Products
+    group: Supply chain security
     badge:
       color: green
       text: New
