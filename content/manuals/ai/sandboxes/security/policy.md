@@ -114,8 +114,21 @@ kit:my-sandbox        network   sandbox:my-sandbox   allow      active   api.exa
 kit:my-sandbox:deny   network   sandbox:my-sandbox   deny       active   telemetry.example.com
 ```
 
-Use `--type network` to show only network policies. Specify a sandbox name to
-show global rules plus rules scoped to one sandbox:
+The columns are:
+
+- `NAME`: the rule name.
+- `TYPE`: the rule type, such as `network`.
+- `ORIGIN`: where the rule applies. `local` means the rule is global and
+  applies to all sandboxes. `sandbox:<name>` means the rule is scoped to the
+  named sandbox.
+- `DECISION`: whether the rule allows or denies the resource.
+- `STATUS`: whether the rule is currently in effect. A rule may be inactive if
+  it's overridden by another rule, for example.
+- `RESOURCES`: the hosts or patterns the rule applies to.
+
+Use `--type network` to show only network policies. Without a sandbox argument,
+`sbx policy ls` shows every rule across all sandboxes. Pass a sandbox name to
+filter the list to global rules and rules scoped to that sandbox only:
 
 ```console
 $ sbx policy ls my-sandbox
