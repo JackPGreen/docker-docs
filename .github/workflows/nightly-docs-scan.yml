@@ -50,7 +50,7 @@ jobs:
       - name: Configure AWS credentials
         id: aws-credentials
         continue-on-error: true
-        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4
+        uses: aws-actions/configure-aws-credentials@d979d5b3a71173a29b74b5b88418bfda9437d885 # v4
         with:
           role-to-assume: arn:aws:iam::710015040892:role/docker-agent-action-20260409141318957000000001
           aws-region: us-east-1
