@@ -7,7 +7,7 @@ aliases:
   - /manuals/ai/cagent/
 params:
   sidebar:
-    group: Open source
+    group: AI and agents
     badge:
       color: violet
       text: Experimental

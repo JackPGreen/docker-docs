@@ -7,7 +7,7 @@ description: |
 keywords: deprecated, retired, docker products, docker features, legacy
 params:
   sidebar:
-    group: Products
+    group: Application development
 aliases:
   - /docker-hub/service-accounts/
   - /cloud/
