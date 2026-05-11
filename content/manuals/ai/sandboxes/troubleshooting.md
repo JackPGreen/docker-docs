@@ -52,6 +52,10 @@ To allow all outbound traffic instead:
 $ sbx policy allow network "**"
 ```
 
+If `sbx policy allow` doesn't unblock the request, your organization may
+manage sandbox policies centrally and take precedence over local rules. See
+[Organization governance](security/governance.md).
+
 ## SSH and other non-HTTP connections fail
 
 Non-HTTP TCP connections like SSH can be allowed by adding a policy rule for

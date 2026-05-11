@@ -18,6 +18,11 @@ sandbox gets its own Docker daemon, filesystem, and network — the agent can
 build containers, install packages, and modify files without touching your host
 system.
 
+Organization admins can
+[centrally manage sandbox network and filesystem policies](security/governance.md)
+from the Docker Admin Console, so the same rules apply uniformly across every
+developer's machine. Available on a separate paid subscription.
+
 ## Get started
 
 Install the `sbx` CLI and sign in:

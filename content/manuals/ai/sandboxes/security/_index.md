@@ -81,6 +81,18 @@ See [Workspace trust](workspace/).
 see the full list of active rules, and remove entries you don't need. See
 [Default security posture](defaults/).
 
+## Organization-wide control
+
+On a single developer's machine, network and filesystem policies are
+configured locally with `sbx policy`. Admins can also centrally define those
+policies in the Docker Admin Console. When organization governance is active,
+the centrally defined rules apply uniformly across every sandbox in the
+organization and take precedence over local rules. Admins can optionally
+delegate specific rule types back to local control so developers can add
+additional allow rules.
+
+See [Organization governance](governance/) for details.
+
 ## Learn more
 
 - [Isolation layers](isolation/): how hypervisor, network, Docker, and
@@ -89,4 +101,6 @@ see the full list of active rules, and remove entries you don't need. See
   blocks
 - [Credentials](credentials/): how to provide and manage API keys
 - [Policies](policy/): how to customize network access rules
+- [Organization governance](governance/): centrally manage policies across
+  an organization
 - [Workspace trust](workspace/): what to review after an agent session

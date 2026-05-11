@@ -371,6 +371,22 @@ the host service. For example, to verify connectivity from a sandbox shell:
 $ curl http://host.docker.internal:11434
 ```
 
+## Rolling out to a team
+
+When rolling sandboxes out across a team, two features handle different
+needs:
+
+- [Custom templates and kits](customize/) let you package reusable agent
+  configurations, MCP servers, base images, and per-project policies. Every
+  developer pulls them down with their workspace.
+- [Organization governance](security/governance.md) lets admins define
+  network and filesystem rules in the Docker Admin Console. The rules apply
+  across every developer's sandboxes and take precedence over local policy.
+  Available on a separate paid subscription.
+
+Customization gives developers shared starting points. Governance gives
+admins centralized enforcement.
+
 ## What persists
 
 While a sandbox exists, installed packages, Docker images, configuration

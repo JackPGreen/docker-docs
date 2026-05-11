@@ -15,13 +15,27 @@ Signing in gives each sandbox a verified identity, which lets Docker:
 - **Tie sandboxes to a real person.** Governance matters when agents can build
   containers, install packages, and push code. Your Docker identity is the
   anchor.
-- **Enable team features down the road.** Shared environments, org-level
-  policies, audit logs. These all need a concept of "who," and building that in
-  later would be worse for everyone.
+- **Enable team features.** Team-scale features like
+  [organization governance](security/governance.md), shared environments, and
+  audit logs need a concept of "who," and adding that later would be worse for
+  everyone.
 - **Authenticate against Docker infrastructure.** Sandboxes pull images, run
   daemons, and talk to Docker services. A Docker account makes that seamless.
 
 Your Docker account email is only used for authentication, not marketing.
+
+## Can I enforce sandbox policies across my organization?
+
+Yes. Admins can centrally manage network and filesystem policies from the
+Docker Admin Console. Rules defined there apply to every sandbox in the
+organization and take precedence over local rules set with `sbx policy`.
+Admins can optionally delegate specific rule types back to local control so
+developers can add additional allow rules.
+
+See [Organization governance](security/governance.md). This feature requires
+a separate paid subscription —
+[contact Docker Sales](https://www.docker.com/products/ai-governance/#contact-sales)
+to get started.
 
 ## Does the CLI collect telemetry?
 
