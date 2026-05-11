@@ -13,6 +13,10 @@ other. A policy system controls what a sandbox can access over the network.
 Use the `sbx policy` command to configure network access rules. Rules apply
 to all sandboxes on the machine.
 
+If your organization manages sandbox policies centrally, organization rules
+take precedence over the local rules described on this page. See
+[Organization governance](governance.md).
+
 ## Network policies
 
 The only way traffic can leave a sandbox is through an HTTP/HTTPS proxy on
@@ -46,6 +50,11 @@ Choose a default network policy:
 
 You can change your effective policy at any time using `sbx policy allow` and
 `sbx policy deny`, or start over by running `sbx policy reset`.
+
+> [!NOTE]
+> If your organization manages sandbox policies centrally, organization rules
+> take precedence over the policy you select here. See
+> [Organization governance](governance.md).
 
 ### Non-interactive environments
 
@@ -206,6 +215,10 @@ regardless of specificity.
 
 To unblock a domain, find the deny rule with `sbx policy ls` and remove it
 with `sbx policy rm`.
+
+If your organization manages sandbox policies centrally, organization rules
+take precedence and local rules are not evaluated unless the admin delegates
+that rule type. See [Organization governance](governance.md).
 
 ## Troubleshooting
 
