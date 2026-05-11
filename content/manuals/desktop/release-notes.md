@@ -26,6 +26,31 @@ Docker Desktop versions older than 6 months from the latest release are not avai
 
 For more frequently asked questions, see the [FAQs](/manuals/desktop/troubleshoot-and-support/faqs/releases.md).
 
+## 4.73.0
+
+{{< release-date date="2026-05-11" >}}
+
+{{< desktop-install-v2 all=true win_arm_release="Early Access" version="4.73.0" build_path="/226246/" >}}
+
+### Updates
+
+- [Docker Engine v29.4.3](https://docs.docker.com/engine/release-notes/29/#2943)
+- [Docker Agent v1.54.0](https://github.com/docker/docker-agent/releases/tag/v1.54.0)
+
+### Bug fixes and enhancements
+
+#### For all platforms
+
+- Fixed `Cmd+Q` (Mac) and `Ctrl+Q` (Windows/Linux) not fully quitting Docker Desktop. Fixes [docker/for-mac#7833](https://github.com/docker/for-mac/issues/7833).
+- Fixed a bug where canceling `docker load` left a containerd ref lock held, causing subsequent loads of the same image to fail.
+- Fixed an issue where Docker Desktop made unnecessary network requests to `mcp.docker.com` on sign-in when MCP Toolkit was disabled, causing unexpected proxy authentication prompts.
+- Fixed an issue where the search input in Gordon's session sidebar would not close if it was left empty.
+
+#### For Mac
+
+- Fixed excessive memory usage on Apple Silicon Macs by improving the Linux VM's ability to return freed container memory back to the host OS.
+- Fixed a bug where containers received connections with a corrupted source IP when another container had an active outbound connection to an IP in the same subnet range. Fixes [docker/for-mac#7824](https://github.com/docker/for-mac/issues/7824).
+
 ## 4.72.0
 
 {{< release-date date="2026-05-06" >}}
