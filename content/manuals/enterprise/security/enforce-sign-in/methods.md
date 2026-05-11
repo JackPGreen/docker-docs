@@ -44,7 +44,7 @@ To configure the registry key method manually:
    - Add each organization on a separate line
    - Do not use spaces or commas as separators
 1. Restart Docker Desktop.
-1. Verify the `Sign in required!` prompt appears in Docker Desktop.
+1. Verify the **Sign in required!** prompt appears in Docker Desktop.
 
 {{< /tab >}}
 {{< tab name="Group Policy deployment" >}}
@@ -275,8 +275,12 @@ Create the registry.json file during Docker Desktop installation:
 Start-Process '.\Docker Desktop Installer.exe' -Wait 'install --allowed-org=myorg'
 
 # Command Prompt
-"Docker Desktop Installer.exe" install --allowed-org=myorg
+"Docker Desktop Installer.exe" install --allowed-org=myorg1
 ```
+
+> [!NOTE]
+>
+> The `--allowed-org` flag accepts only one organization. To enforce sign-in for multiple organizations on Mac, configure the `registry.json` file after installation.
 
 #### Mac
 
@@ -285,6 +289,9 @@ sudo hdiutil attach Docker.dmg
 sudo /Volumes/Docker/Docker.app/Contents/MacOS/install --allowed-org=myorg
 sudo hdiutil detach /Volumes/Docker
 ```
+> [!NOTE]
+>
+> The `--allowed-org` flag accepts only one organization. To enforce sign-in for multiple organizations on Mac, configure the `registry.json` file after installation.
 
 {{< /tab >}}
 {{< /tabs >}}
