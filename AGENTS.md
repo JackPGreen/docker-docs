@@ -130,11 +130,16 @@ produces broken HTML — always check COMPONENTS.md for correct syntax.
 
 ```sh
 npx prettier --write <file>        # Format before committing
+scripts/lint.sh <file>...          # Lint specific files (markdownlint + vale)
 docker buildx bake validate        # Run all validation checks
 docker buildx bake lint            # Markdown linting only
 docker buildx bake vale            # Style guide checks only
 docker buildx bake test            # HTML and link checking
 ```
+
+For incremental work, prefer `scripts/lint.sh` over the `bake` targets —
+it runs the same checks on just the files you pass, so the output stays
+scoped to your changes instead of the whole repo.
 
 ### Validation in git worktrees
 
@@ -147,8 +152,13 @@ and `validate-vendor` targets run correctly in CI.
 
 1. Make changes
 2. Format with prettier: `npx prettier --write <file>`
-3. Run `docker buildx bake lint vale`
+3. Lint the changed files: `scripts/lint.sh <file>...`
 4. Run a full build with `docker buildx bake` (optional for small changes)
+
+Always lint the specific files you changed before committing. Use
+`scripts/lint.sh` rather than the `bake` targets so the output is scoped
+to your changes — bake runs across the entire repo and the noise makes
+real issues easy to miss.
 
 ## Git hygiene
 
