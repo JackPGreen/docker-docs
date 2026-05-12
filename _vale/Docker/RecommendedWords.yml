@@ -10,8 +10,8 @@ swap:
   '\b(?:ie|i\.e\.)[\s,]': that is
   (?:account name|accountname|user name): username
   (?:drop down|dropdown): drop-down
-  (?:log out|logout): sign out
-  (?:sign on|log on|log in|logon|login): sign in
+  \blog out\b: sign out
+  \b(?:sign on|log on|log in)\b: sign in
   above: previous
   adaptor: adapter
   administrate: administer
