@@ -12,7 +12,6 @@ swap:
   (?:drop down|dropdown): drop-down
   \blog out\b: sign out
   \b(?:sign on|log on|log in)\b: sign in
-  above: previous
   adaptor: adapter
   administrate: administer
   afterwards: afterward
@@ -25,7 +24,6 @@ swap:
   anti-virus: antivirus
   appendixes: appendices
   assembler: assembly
-  below: following
   check box: checkbox
   check boxes: checkboxes
   click: select
