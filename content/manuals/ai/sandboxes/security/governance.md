@@ -6,12 +6,6 @@ description: Centrally manage sandbox network and filesystem policies for your o
 keywords: docker sandboxes, governance, organization policy, AI governance, admin console, network access, filesystem access
 ---
 
-> [!NOTE]
-> Sandbox organization governance is available on a separate paid
-> subscription.
-> [Contact Docker Sales](https://www.docker.com/products/ai-governance/#contact-sales)
-> to request access.
-
 {{< summary-bar feature_name="Docker Sandboxes sbx" >}}
 
 This page covers how to configure organization policies in the Docker Admin
@@ -25,6 +19,12 @@ machines, take precedence over local `sbx policy` rules, and can't be
 overridden by individual users. Admins can optionally
 [delegate](#delegate-rules-to-local-policy) specific rule types back to local
 control so developers can add additional allow rules.
+
+> [!NOTE]
+> Sandbox organization governance is available on a separate paid
+> subscription.
+> [Contact Docker Sales](https://www.docker.com/products/ai-governance/#contact-sales)
+> to request access.
 
 ## Network policies
 
