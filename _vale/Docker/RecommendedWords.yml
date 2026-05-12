@@ -37,5 +37,5 @@ swap:
   repo: repository
   scroll: navigate
   url: URL
-  vs: versus
+  '\bvs\b(?!\.|\s+Code)': versus
   wish: want
