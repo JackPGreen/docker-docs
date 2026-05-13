@@ -205,6 +205,28 @@ $ sbx run <sandbox-name>
 
 Restarting the sandbox re-syncs the VM clock with the host.
 
+## Daemon fails to start after downgrading
+
+If you downgrade `sbx` to a version older than the one that last managed your
+local state, the daemon may fail to start with a database version mismatch:
+
+```text
+ERROR: failed to start backend in-process: start backend: creating containerd
+server: ... database is at major version 6, but this binary only supports up
+to major version 1
+```
+
+A newer version of `sbx` upgraded the local database to a schema that older
+binaries don't understand. To recover, reset all sandbox state:
+
+```console
+$ sbx reset --preserve-secrets
+```
+
+This stops all VMs and deletes all sandbox data. You'll need to create new
+sandboxes afterwards. The `--preserve-secrets` flag keeps any secrets you've
+set so you don't have to reconfigure them.
+
 ## Removing all state
 
 As a last resort, if `sbx reset` doesn't resolve your issue, you can remove the
