@@ -53,7 +53,8 @@ commands:
 ```
 
 Startup commands cover things like launching background services,
-warming caches, or refreshing config on each start:
+warming caches, or refreshing config on each start. They must be
+idempotent — see the [`startup`](#startup) spec reference:
 
 ```yaml
 commands:
@@ -522,6 +523,13 @@ commands have been dispatched, regardless of `background`. Use them
 for non-interactive prep — launching daemons, warming caches,
 refreshing config — and use `commands.initFiles` for any value that
 needs to land on disk before the agent runs.
+
+Startup commands must be idempotent. They run on every sandbox start
+and replay on container restarts, so a command that fails or
+misbehaves on a second invocation breaks the restart path. Guard
+work with existence checks, use upserts instead of inserts, and
+prefer commands that converge to the same end state regardless of
+how many times they run.
 
 #### `initFiles`
 
