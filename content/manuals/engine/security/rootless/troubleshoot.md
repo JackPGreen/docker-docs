@@ -286,7 +286,7 @@ If slirp4netns is not installed, Docker falls back to [VPNKit](https://github.co
 Installing slirp4netns may improve the network throughput.
 
 For more information about network drivers for RootlessKit, see
-[RootlessKit documentation](https://github.com/rootless-containers/rootlesskit/blob/v2.0.0/docs/network.md).
+[RootlessKit documentation](https://github.com/rootless-containers/rootlesskit/blob/v3.0.0/docs/network.md).
 
 Also, changing MTU value may improve the throughput.
 The MTU value can be specified by creating `~/.config/systemd/user/docker.service.d/override.conf` with the following content:
@@ -345,8 +345,8 @@ To change the RootlessKit networking configuration:
 
 For more information about networking options for RootlessKit, see:
 
-- [Network drivers](https://github.com/rootless-containers/rootlesskit/blob/v2.0.0/docs/network.md)
-- [Port drivers](https://github.com/rootless-containers/rootlesskit/blob/v2.0.0/docs/port.md)
+- [Network drivers](https://github.com/rootless-containers/rootlesskit/blob/v3.0.0/docs/network.md)
+- [Port drivers](https://github.com/rootless-containers/rootlesskit/blob/v3.0.0/docs/port.md)
 
 ### Tips for debugging
 
